@@ -21,6 +21,7 @@ data_size = data.shape[0]
 
 # ================== Step 1: Metadata ==================
 metadata = []
+metadataUpdated = []
 for f in data.columns:
     # Defining the role
     if f == 'target':
@@ -49,8 +50,7 @@ for f in data.columns:
     dtype = data[f].dtype
 
     # Creating a Dict that contains all the metadata for the variable
-    f_dict = {'varname': f, 'role': role, 'level': level, 'keep': keep, 'dtype': dtype}
-    metadata.append(f_dict)
+    metadata.append({'varname': f, 'role': role, 'level': level, 'keep': keep, 'dtype': dtype})
 
 meta = pd.DataFrame(metadata, columns=['varname', 'role', 'level', 'keep', 'dtype'])
 meta.set_index('varname', inplace=True)
