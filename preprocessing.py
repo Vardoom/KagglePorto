@@ -128,5 +128,5 @@ data = pd.get_dummies(data, columns=meta[(meta.level == 'nominal') & meta.keep].
 
 # ================== Step 4: Output Data ==================
 train = data.iloc[:train_size, :]
-train['target'] = target
+train = pd.concat([train, target], axis=1)
 test = data.iloc[train_size:, :]
