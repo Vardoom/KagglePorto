@@ -131,8 +131,38 @@ data = pd.get_dummies(data, columns=meta[(meta.level == 'nominal') & meta.keep].
 print("End of step 3 of preprocessing")
 
 
+# Getting dummies for all possible remaining categories
+dummiesList = ['ps_ind_01', 'ps_ind_03', 'ps_ind_14', 'ps_ind_15', 'ps_car_11', 'ps_calc_04', 'ps_calc_05',
+               'ps_calc_06', 'ps_calc_07', 'ps_calc_08', 'ps_calc_09', 'ps_calc_10', 'ps_calc_11', 'ps_calc_12',
+               'ps_calc_13', 'ps_calc_14']
+data = pd.get_dummies(data, columns=dummiesList, drop_first=True)
+
+""""
+# Sorting continuous values into categories
+catList = ['ps_reg_01', 'ps_reg_02', 'ps_reg_03', 'ps_car_12', 'ps_car_13', 'ps_car_14', 'ps_car_15', 'ps_calc_01',
+           'ps_calc_02', 'ps_calc_03']
+catListNew = [name + "_new" for name in catList]
+for name in catList:
+    column = pd.Series(data[name])
+    percentage_rank = column.rank(method="max", pct=True)
+    newName = name + "_new"
+    data[newName] = 0
+    data[newName][(percentage_rank > 0.25) & (percentage_rank <= 0.5)] = 1
+    data[newName][(percentage_rank > 0.5) & (percentage_rank <= 0.75)] = 2
+    data[newName][(percentage_rank > 0.75)] = 3
+data = pd.get_dummies(data, columns=catListNew, drop_first=True)
+data.drop(catList, inplace=True, axis=1)
+meta.loc[catList, 'keep'] = False  # Updating the metadata
+train = data.iloc[:train_size, :]
+test = data.iloc[train_size:, :]
+print("Data formated")
+"""
+
+
 # ================== Step 4: Output Data ==================
 train = data.iloc[:train_size, :]
 train = pd.concat([train, target], axis=1)
 test = data.iloc[train_size:, :]
 print("End of step 4 of preprocessing")
+
+print("End of preprocessing")
