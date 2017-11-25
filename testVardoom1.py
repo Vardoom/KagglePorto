@@ -7,14 +7,15 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_sco
 from sklearn.metrics import roc_auc_score
 
 # Retrieve train & test from preprocessing.py
-train = preprocessing.train
+train = preprocessing.train.drop(labels='target', axis=1, inplace=False)
+train_size = preprocessing.train_size
+target = preprocessing.target
 # test = preprocessing.test
 # data = preprocessing.data
 # meta = preprocessing.meta
-train_size = preprocessing.train_size
-target = preprocessing.target
 
 
 # ================== Step 5: Machine Learning ==================
-estimator = ExtraTreesClassifier(n_jobs=-1)
-scores = cross_val_score(estimator=estimator, X=train, y=target, cv=StratifiedKFold(n_splits=10), scoring='roc_auc')
+def method_1(estimator=ExtraTreesClassifier()):
+    scores = cross_val_score(estimator=estimator, X=train, y=target, cv=5, scoring='roc_auc', n_jobs=-1)
+    return scores
