@@ -10,6 +10,7 @@ from sklearn.feature_selection import VarianceThreshold
 # Loading data
 train = pd.read_csv("input/train.csv")
 test = pd.read_csv("input/test.csv")
+print("Data loaded")
 
 # Merging train and test
 train_size = train.shape[0]
@@ -18,6 +19,7 @@ target = train["target"]
 train.drop("target", inplace=True, axis=1)
 data = pd.concat([train, test])
 data_size = data.shape[0]
+print("End of step 0 of preprocessing")
 
 # ================== Step 1: Metadata ==================
 metadata = []
@@ -54,6 +56,7 @@ for f in data.columns:
 
 meta = pd.DataFrame(metadata, columns=['varname', 'role', 'level', 'keep', 'dtype'])
 meta.set_index('varname', inplace=True)
+print("End of step 1 of preprocessing")
 
 # ================== Step 2: Data Quality Checks ==================
 
@@ -119,14 +122,17 @@ train_encoded, test_encoded = target_encode(trn_series=train["ps_car_11_cat"], t
 data['ps_car_11_cat_te'] = pd.concat([train_encoded, test_encoded])
 data.drop('ps_car_11_cat', axis=1, inplace=True)
 meta.loc['ps_car_11_cat', 'keep'] = False  # Updating the meta
+print("End of step 2 of preprocessing")
 
 # ================== Step 3: Feature Engineering ==================
 
 # Getting dummies for other cat columns
 data = pd.get_dummies(data, columns=meta[(meta.level == 'nominal') & meta.keep].index, drop_first=True)
+print("End of step 3 of preprocessing")
 
 
 # ================== Step 4: Output Data ==================
 train = data.iloc[:train_size, :]
 train = pd.concat([train, target], axis=1)
 test = data.iloc[train_size:, :]
+print("End of step 4 of preprocessing")
