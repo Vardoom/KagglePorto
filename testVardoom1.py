@@ -16,10 +16,5 @@ target = preprocessing.target
 
 
 # ================== Step 5: Machine Learning ==================
-
-x_train = train.iloc[:train_size // 2, :]
-y_train = target.iloc[:train_size // 2]
-x_test = train.iloc[train_size // 2:, :]
-y_test_true = target.iloc[train_size // 2:]
-algorithm = ExtraTreesClassifier(n_jobs=-1)
-scores = cross_val_score(algorithm, train, target, cv=10, scoring='roc_auc')
+estimator = ExtraTreesClassifier(n_jobs=-1)
+scores = cross_val_score(estimator=estimator, X=train, y=target, cv=StratifiedKFold(n_splits=10), scoring='roc_auc')
