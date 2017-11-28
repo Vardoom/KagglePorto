@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve, auc
 from sklearn.model_selection import StratifiedKFold, GridSearchCV
+
 # import missingno as mssno
 
 seed = 45
@@ -57,6 +58,7 @@ mssno.bar(test, color='b', figsize=(16, 4), fontsize=12)
 mssno.matrix(train)
 """
 
+
 def missing_value(df):
     col = df.columns
     for i in col:
@@ -66,7 +68,6 @@ def missing_value(df):
 
 missing_value(train)
 missing_value(test)
-
 
 # Convert variables into category type
 print("Category Type")
@@ -81,6 +82,7 @@ def uniq(df):
 uniq(train)
 """
 
+
 def category_type(df):
     col = df.columns
     for i in col:
@@ -90,7 +92,6 @@ def category_type(df):
 
 category_type(train)
 category_type(test)
-
 
 # Univariate analysis
 print("Variables analysis")
@@ -222,6 +223,8 @@ plt.tight_layout()
 
 # Determine outliers in dataset
 print("Outliers")
+
+
 def outlier(df, columns):
     for i in columns:
         quartile_1, quartile_3 = np.percentile(df[i], [25, 75])
@@ -238,9 +241,10 @@ def outlier(df, columns):
 outlier(train, num_col)
 outlier(test, num_col)
 
-
 # One Hot Encoding
 print("One Hot Encoding")
+
+
 def OHE(df1, df2, column):
     cat_col = column
     # cat_col = df.select_dtypes(include =['category']).columns
@@ -277,14 +281,17 @@ del train1, test1
 print("Hyperparameter Tuning")
 # Grid search
 logreg = LogisticRegression(class_weight='balanced')
-param = {'C': [0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.1, 0.3, 0.5, 1]}
+param = {'tol': [1, 1e-2, 1e-4, 1e-6, 1e-8],
+         'C': [0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.1, 0.3, 0.5, 1],
+         'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+         'max_iter': [10, 100, 1000, 10000]}
 clf = GridSearchCV(logreg, param, scoring='roc_auc', refit=True, cv=3, n_jobs=8)
 clf.fit(X, y)
 print('Best roc_auc: {:.4}, with best C: {}'.format(clf.best_score_, clf.best_params_['C']))
 
 # Logistic Regression model
 print("Logic Regression")
-kf = StratifiedKFold(n_splits=5, random_state=seed, shuffle=True)
+kf = StratifiedKFold(n_splits=10, random_state=seed, shuffle=True)
 pred_test_full = 0
 cv_score = []
 i = 1
@@ -326,4 +333,4 @@ print("Prediction")
 y_pred = pred_test_full / 5
 submit = pd.DataFrame({'id': test['id'], 'target': y_pred})
 submit.to_csv('output/simpleLogisticModel.csv', index=False)
-#submit.head()
+# submit.head()
