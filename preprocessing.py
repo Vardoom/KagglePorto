@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import Imputer
-from sklearn.feature_selection import VarianceThreshold
 
-"""This file preprocesses the data. It is based on the kernel of Bert Carremans, Data Preparation & Exploration"""
+"""This file preprocesses the data."""
 
 # ================== Step 0: Import Data and Merge ==================
 
